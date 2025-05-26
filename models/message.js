@@ -33,8 +33,11 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      sequelize,
+     sequelize,
       modelName: "Message",
+       tableName: "Message",       
+    freezeTableName: true,     
+    timestamps: true,
     }
   );
   return Message;

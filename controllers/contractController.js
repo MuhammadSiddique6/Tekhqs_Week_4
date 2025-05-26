@@ -2,7 +2,7 @@ const db = require("../models");
 const Contract = db.Contract;
 const Offer = db.Offer;
 const Post_job = db.Post_job;
-
+const Payment = db.Payment;
 exports.contract = async (req, res) => {
   try {
     const { status } = req.body;
@@ -31,18 +31,64 @@ exports.contract = async (req, res) => {
       freelancer_id: offers.user_id,
     });
 
-    res.status(201).json({
-      message: "Contract created successfully",
-      contract: newContract,
+    res.status(201).json({message: "Contract created successfully",contract: newContract,
     });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Internal Server Error", error: err.message });
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
   }
 };
-exports.getcontracts = (req, res) => {
+exports.getcontracts =async (req, res) => {
   try {
-    const user_id = req.user.id;
-  } catch (err) {}
+    const allcontract = await Contract.findAll();
+    if (!allcontract){
+      res.status(404).send("No contract found");
+    }
+    else{
+      res.status(200).json({message: "All Contracts",contracts: allcontract,});
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
+  }
 };
+exports.halfmilestone = async (req, res) => {
+  try {
+    const milestatus = await Contract.findOne({ where: {employer_id } });
+
+    if (!milestatus) {
+      return res.status(404).json({ message: "Contract not found" });
+    }
+    
+    await Payment.create({
+      employer_id: milestatus.employer_id,
+      freelancer_id: milestatus.freelancer_id,
+      status: "half",
+    });
+    milestatus.status = "half";
+    await milestatus.save();
+    res.status(200).json({ message: "Milestone status updated to half", contract: milestatus });
+
+  } catch (err) {
+    res.status(500).json({ message: "Error updating milestone", error: err.message });
+  }
+}
+exports.fullmilestone = async (req, res) => {
+  try {
+
+    const milestatus = await Contract.findOne({ where: { employer_id } });
+
+    if (!milestatus) {
+      return res.status(404).json({ message: "Contract not found" });
+    }
+    await Payment.create({
+      employer_id: milestatus.employer_id,
+      freelancer_id: milestatus.freelancer_id,
+      status: "full",
+    });
+    milestatus.status = "full";
+    await milestatus.save();
+    res.status(200).json({ message: "Milestone status updated to full", contract: milestatus });
+
+  } catch (err) {
+    res.status(500).json({ message: "Error updating milestone", error: err.message });
+  }
+}

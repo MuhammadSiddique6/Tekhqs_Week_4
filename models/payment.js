@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "User", // singular table name
+          model: "User", 
           key: "id",
         },
       },
@@ -28,13 +28,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "User", // singular table name
+          model: "User", 
           key: "id",
         },
       },
       status: {
         type: DataTypes.STRING,
         allowNull: false,
+        defaultValue: "pending",
       },
     },
     {
