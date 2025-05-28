@@ -1,10 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {
-  contract,
-  getcontracts,
-  halfmilestone,
-  fullmilestone
+const {contract,getcontracts,halfmilestone,fullmilestone
 } = require("../controllers/contractController");
 const { verifytoken } = require("../middleware/verifytoken");
 

@@ -7,6 +7,7 @@ require("dotenv").config();
 const db = require("./models");
 const Message = db.Message;
 const Notifications = db.Notifications;
+
 connection();
 const PORT = process.env.PORT || 5000
 
